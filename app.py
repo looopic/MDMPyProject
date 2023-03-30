@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask.helpers import send_file
 from diffusers import StableDiffusionPipeline
 import torch
+import tempfile
 
 
 
@@ -30,6 +31,9 @@ def getImage(text):
     #pipe = pipe.to("cuda")
     prompt = text
     image = pipe(prompt).images[0]  
-    return image
+    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
+        image.save(temp_file, format='PNG')
+        file_path = temp_file.name
+    return file_path
     
 
